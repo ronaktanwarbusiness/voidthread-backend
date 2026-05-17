@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import databaseConfig from '../../config/database.config';
+import awsConfig from '../../config/aws.config';
 import { AdminModule } from '../admin/admin.module';
 import { Connection } from 'mongoose';
 
@@ -11,7 +12,7 @@ import { Connection } from 'mongoose';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig],
+      load: [databaseConfig, awsConfig],
       envFilePath: ['.env.local', '.env'],
     }),
     MongooseModule.forRootAsync({

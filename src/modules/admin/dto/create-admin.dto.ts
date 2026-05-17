@@ -6,7 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { AdminRole } from '../schemas/admin-users.schema';
+import { AdminRole } from '../schemas/admin-user.schema';
 
 export class CreateAdminDto {
   @ApiProperty({ example: 'John' })
