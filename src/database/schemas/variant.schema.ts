@@ -46,9 +46,10 @@ export class Variant {
   sku: string;
 
   @Prop({
-    default: '',
+    type: [String],
+    default: [],
   })
-  image: string;
+  images: string[];
 
   @Prop({
     enum: ['ACTIVE', 'INACTIVE', 'OUT_OF_STOCK'],
