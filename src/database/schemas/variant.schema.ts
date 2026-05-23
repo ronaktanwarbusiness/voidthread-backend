@@ -27,6 +27,8 @@ export class Variant {
   @Prop({
     required: true,
     trim: true,
+    uppercase: true,
+    enum: ['BLACK', 'WHITE', 'RED', 'GREEN', 'BLUE'],
   })
   color: string;
 

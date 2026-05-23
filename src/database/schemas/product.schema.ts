@@ -39,12 +39,6 @@ export class Product {
     min: 0,
   })
   selling_price: number;
-
-  @Prop({
-    type: [String],
-    default: [],
-  })
-  images: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
