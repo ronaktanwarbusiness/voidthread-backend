@@ -41,10 +41,10 @@ export class Product {
   selling_price: number;
 
   @Prop({
-    type: Object,
-    default: {},
+    type: [String],
+    default: [],
   })
-  images: Record<string, string[]>;
+  images: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
