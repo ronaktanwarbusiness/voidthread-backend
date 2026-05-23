@@ -11,7 +11,6 @@ import { InventoryModule } from './modules/inventory/inventory.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { UserModule } from './modules/user/user.module';
-import { VariantModule } from './modules/variant/variant.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -38,7 +37,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     OrderModule,
     PaymentModule,
     UserModule,
-    VariantModule,
     WishlistModule,
   ],
   controllers: [AppController],
