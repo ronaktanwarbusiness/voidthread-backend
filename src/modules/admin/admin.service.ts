@@ -9,10 +9,16 @@ import { Model } from 'mongoose';
 import { Product, ProductDocument } from 'src/database/schemas/product.schema';
 import { Variant, VariantDocument } from 'src/database/schemas/variant.schema';
 import {
+  Collection,
+  CollectionDocument,
+} from 'src/database/schemas/collection.schema';
+import {
   CreateProductDto,
   EditProductDto,
   CreateVariantDto,
   EditVariantDto,
+  CreateCollectionDto,
+  EditCollectionDto,
 } from './dtos';
 
 @Injectable()
@@ -20,6 +26,8 @@ export class AdminService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     @InjectModel(Variant.name) private variantModel: Model<VariantDocument>,
+    @InjectModel(Collection.name)
+    private collectionModel: Model<CollectionDocument>,
   ) {}
 
   async createProduct(dto: CreateProductDto) {
@@ -67,7 +75,9 @@ export class AdminService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new InternalServerErrorException('Error retrieving product details');
+      throw new InternalServerErrorException(
+        'Error retrieving product details',
+      );
     }
   }
 
@@ -173,6 +183,85 @@ export class AdminService {
       throw new InternalServerErrorException(
         'Error retrieving product variants',
       );
+    }
+  }
+
+  // --- Collection Management ---
+
+  async createCollection(dto: CreateCollectionDto) {
+    try {
+      const newCollection = new this.collectionModel(dto);
+      const savedCollection = await newCollection.save();
+
+      return {
+        message: 'Collection created successfully',
+        data: savedCollection,
+      };
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new ConflictException('Collection with this slug already exists');
+      }
+      throw new InternalServerErrorException('Error creating collection');
+    }
+  }
+
+  async getCollections() {
+    try {
+      const collections = await this.collectionModel.find().lean();
+      return {
+        message: 'Collections retrieved successfully',
+        data: collections,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error retrieving collections');
+    }
+  }
+
+  async getCollectionById(id: string) {
+    try {
+      const collection = await this.collectionModel.findById(id).lean();
+
+      if (!collection) {
+        throw new NotFoundException(`Collection with ID ${id} not found`);
+      }
+
+      return {
+        message: 'Collection retrieved successfully',
+        data: collection,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        'Error retrieving collection details',
+      );
+    }
+  }
+
+  async editCollection(dto: EditCollectionDto) {
+    try {
+      const { id, ...updateData } = dto;
+      const updatedCollection = await this.collectionModel
+        .findByIdAndUpdate(id, updateData, { new: true })
+        .lean();
+
+      if (!updatedCollection) {
+        throw new NotFoundException(`Collection with ID ${id} not found`);
+      }
+
+      return {
+        message: 'Collection updated successfully',
+        data: updatedCollection,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error.code === 11000) {
+        throw new ConflictException('Collection with this slug already exists');
+      }
+      throw new InternalServerErrorException('Error updating collection');
     }
   }
 }
