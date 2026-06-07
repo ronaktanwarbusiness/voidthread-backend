@@ -88,4 +88,21 @@ export class AuthService {
       user: userObject,
     };
   }
+
+  async getSession(userId: string) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid user_id');
+    }
+
+    const userObject = user.toObject();
+
+    // delete userObject?.password;
+
+    return {
+      is_logged_in: true,
+      user: userObject,
+    };
+  }
 }

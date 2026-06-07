@@ -30,18 +30,59 @@ export const GetSession = createParamDecorator(
  * @example
  * ```ts
  * @Post()
- * login(@SetSession() setSession: (key: string, value: any) => void) {
- *   setSession('userId', 123);
+ * login(@SetSession() setSession: (key: string, value: any) => Promise<void>) {
+ *   await setSession('userId', 123);
  * }
  * ```
  */
 export const SetSession = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    return (key: string, value: unknown) => {
-      if (request.session) {
-        (request.session as unknown as Record<string, unknown>)[key] = value;
-      }
+    return (key: string, value: unknown): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        if (request.session) {
+          (request.session as unknown as Record<string, unknown>)[key] = value;
+          request.session.save((err) => {
+            if (err) {
+              return reject(new Error(String(err)));
+            }
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
+    };
+  },
+);
+
+/**
+ * Parameter decorator that provides a helper function to destroy the session.
+ *
+ * @example
+ * ```ts
+ * @Post('logout')
+ * logout(@LogoutSession() logout: () => Promise<void>) {
+ *   await logout();
+ * }
+ * ```
+ */
+export const LogoutSession = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    return (): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        if (request.session) {
+          request.session.destroy((err) => {
+            if (err) {
+              return reject(new Error(String(err)));
+            }
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
     };
   },
 );
