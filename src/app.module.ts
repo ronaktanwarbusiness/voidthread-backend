@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { CoreModule } from './modules/core/core.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import * as redisStore from 'cache-manager-redis-store';
     PaymentModule,
     UserModule,
     WishlistModule,
+    CoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
