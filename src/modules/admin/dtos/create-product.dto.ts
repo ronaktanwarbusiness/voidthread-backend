@@ -27,4 +27,8 @@ export class CreateProductDto {
   @IsNumber()
   @Min(0)
   selling_price: number;
+
+  @IsArray()
+  @IsOptional()
+  images: string[];
 }

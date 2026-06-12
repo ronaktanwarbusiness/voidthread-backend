@@ -33,10 +33,16 @@ export class CoreService {
       throw new NotFoundException(`Product with slug "${slug}" not found`);
     }
 
-    const variants = await this.variantModel
+    const variantsWithIds = await this.variantModel
       .find({ product_id: product._id.toString() })
-      .populate('product_id')
+      // .populate('product_id')
       .lean();
+
+    const variants = variantsWithIds.map((variant) => ({
+      ...variant,
+      id: variant._id.toString(),
+      _id: undefined,
+    }));
 
     return {
       message: 'Variants retrieved successfully',
@@ -54,9 +60,15 @@ export class CoreService {
       throw new NotFoundException(`Collection with slug "${slug}" not found`);
     }
 
+    const products = collection.product_ids.map((product) => ({
+      ...product,
+      id: product._id.toString(),
+      _id: undefined,
+    }));
+
     return {
       message: 'Products retrieved successfully',
-      data: collection.product_ids,
+      data: products,
     };
   }
 }

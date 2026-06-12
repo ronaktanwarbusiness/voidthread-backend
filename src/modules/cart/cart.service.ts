@@ -102,12 +102,30 @@ export class CartService {
         throw new BadRequestException('Insufficient stock');
       }
 
-      item.quantity = quantity;
-      await cart.save();
+      const updated_cart = await this.cart_model.findOneAndUpdate(
+        {
+          _id: cart._id,
+          'items.variant_id': variant._id,
+        },
+        {
+          $set: {
+            'items.$.quantity': quantity,
+          },
+        },
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
+
+      if (!updated_cart) {
+        throw new NotFoundException('Item not found in cart');
+      }
+
       return {
         isSuccess: true,
         message: 'Cart updated successfully',
-        cart,
+        cart: updated_cart,
       };
     } catch (error) {
       throw error;
@@ -170,29 +188,48 @@ export class CartService {
       }
 
       const product_ids = cart.items.map((item) => item.product_id.toString());
-      const products = await this.product_model
-        .find({ _id: { $in: product_ids } })
-        .lean();
+
+      const variant_ids = cart.items.map((item) => item.variant_id.toString());
+
+      const [products, variants] = await Promise.all([
+        this.product_model.find({ _id: { $in: product_ids } }).lean(),
+        this.variant_model.find({ _id: { $in: variant_ids } }).lean(),
+      ]);
 
       const product_map = new Map(
         products.map((product) => [product._id.toString(), product]),
       );
 
+      const variant_map = new Map(
+        variants.map((variant) => [variant._id.toString(), variant]),
+      );
+
       const items = cart.items.flatMap((item) => {
         const product = product_map.get(item.product_id.toString());
+        const variant = variant_map.get(item.variant_id.toString());
 
-        if (!product) {
+        if (!product || !variant) {
           return [];
         }
 
         return [
           {
-            _id: product._id.toString(),
+            id: product._id.toString(),
             name: product.name,
             slug: product.slug,
             original_price: product.original_price,
             selling_price: product.selling_price,
+            images: product.images,
             quantity: item.quantity,
+            variant: {
+              id: variant._id.toString(),
+              size: variant.size,
+              color: variant.color,
+              // stock: variant.stock,
+              // sku: variant.sku,
+              // images: variant.images,
+              // status: variant.status,
+            },
           },
         ];
       });
