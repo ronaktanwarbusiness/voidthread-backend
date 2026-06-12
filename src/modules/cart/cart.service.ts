@@ -14,6 +14,8 @@ import {
 } from './dtos/add-to-cart.dto';
 import { Product, ProductDocument } from 'src/database/schemas/product.schema';
 
+const TAX_PERCENTAGE = 5;
+
 @Injectable()
 export class CartService {
   constructor(
@@ -252,11 +254,22 @@ export class CartService {
         },
       );
 
+      const tax_total = Number(
+        ((price_breakup.selling_total * TAX_PERCENTAGE) / 100).toFixed(2),
+      );
+
       return {
         isSuccess: true,
         data: {
           items,
-          price_breakup,
+          price_breakup: {
+            ...price_breakup,
+            tax_percentage: TAX_PERCENTAGE,
+            tax_total,
+            grand_total: Number(
+              (price_breakup.selling_total + tax_total).toFixed(2),
+            ),
+          },
           user_id: cart.user_id,
         },
       };
