@@ -27,6 +27,19 @@ async function bootstrap() {
       host: process.env.REDIS_HOST || 'localhost',
       port: Number(process.env.REDIS_PORT) || 6379,
     },
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+  });
+  redisClient.on('error', (err) => {
+    console.error('Redis Error:', err);
+  });
+
+  redisClient.on('connect', () => {
+    console.log('Redis connecting...');
+  });
+
+  redisClient.on('ready', () => {
+    console.log('Redis ready');
   });
 
   await redisClient

@@ -14,8 +14,6 @@ import { UserModule } from './modules/user/user.module';
 import { WishlistModule } from './modules/wishlist/wishlist.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CacheModule } from '@nestjs/cache-manager';
-import * as redisStore from 'cache-manager-redis-store';
 import { CoreModule } from './modules/core/core.module';
 
 @Module({
@@ -29,13 +27,6 @@ import { CoreModule } from './modules/core/core.module';
         uri: configService.get<string>('MONGO_URI'),
       }),
       inject: [ConfigService],
-    }),
-    CacheModule.register({
-      isGlobal: true,
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      ttl: 3600,
     }),
     AddressModule,
     AdminModule,
