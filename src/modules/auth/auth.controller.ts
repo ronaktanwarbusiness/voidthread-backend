@@ -19,11 +19,11 @@ export class AuthController {
 
   @Get('session')
   async getSession(@GetSession('user_id') userId: string, @Req() req: Request) {
-    return {
-      sessionID: req?.['sessionID'],
-      session: req?.['session'],
-      cookieHeader: req?.headers?.['cookie'],
-    };
+    // return {
+    //   sessionID: req?.['sessionID'],
+    //   session: req?.['session'],
+    //   cookieHeader: req?.headers?.['cookie'],
+    // };
     if (!userId) {
       return {
         is_logged_in: false,
