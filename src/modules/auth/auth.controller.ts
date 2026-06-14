@@ -54,7 +54,10 @@ export class AuthController {
   async login(
     @Body() body: LoginDto,
     @SetSession() setSession: (key: string, value: unknown) => Promise<void>,
+    @Req() req: Request,
   ) {
+    console.log('req.secure:', req?.['secure']);
+    console.log('x-forwarded-proto:', req?.headers?.['x-forwarded-proto']);
     const response = await this.authService.login(body);
     await setSession('user_id', response.user._id.toString());
     return response;
