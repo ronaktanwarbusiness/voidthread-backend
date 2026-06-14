@@ -5,6 +5,7 @@ import {
   Post,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -17,7 +18,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('session')
-  async getSession(@GetSession('user_id') userId: string) {
+  async getSession(@GetSession('user_id') userId: string, @Req() req: Request) {
+    return {
+      sessionID: req?.['sessionID'],
+      session: req?.['session'],
+      cookieHeader: req?.headers?.['cookie'],
+    };
     if (!userId) {
       return {
         is_logged_in: false,
