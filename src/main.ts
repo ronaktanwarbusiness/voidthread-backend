@@ -10,12 +10,12 @@ async function bootstrap() {
     rawBody: true,
   });
 
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3001', 'http://localhost:3000'];
+  // const allowedOrigins = process.env.ALLOWED_ORIGINS
+  //   ? process.env.ALLOWED_ORIGINS.split(',')
+  //   : ['http://localhost:3001', 'http://localhost:3000'];
 
   app.enableCors({
-    origin: allowedOrigins,
+    origin: '*',
     credentials: true,
   });
 
