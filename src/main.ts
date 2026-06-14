@@ -22,6 +22,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.setGlobalPrefix('api/v1');
 
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   const redisClient = createClient({
     socket: {
       host: process.env.REDIS_HOST || 'localhost',
