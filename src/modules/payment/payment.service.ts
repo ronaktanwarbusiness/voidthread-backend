@@ -3,6 +3,7 @@ import { CreatePaymentDto } from './dtos/create-payment.dto';
 import { CartService } from '../cart/cart.service';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { UserService } from '../user/user.service';
+import { OrderService } from '../order/order.service';
 import { CASHFREE_CLIENT_ID, CASHFREE_CLIENT_SECRET } from 'src/config/env';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -21,6 +22,7 @@ export class PaymentService {
   constructor(
     private readonly cartService: CartService,
     private readonly userService: UserService,
+    private readonly orderService: OrderService,
     @InjectModel(Transaction.name)
     private readonly transaction_model: Model<TransactionDocument>,
   ) {
@@ -131,6 +133,10 @@ export class PaymentService {
         : TransactionStatus.FAILED;
 
     await transaction.save();
+
+    if (transaction.status === TransactionStatus.SUCCESS) {
+      await this.orderService.createOrder(transaction);
+    }
   }
 
   verifySignature(

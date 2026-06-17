@@ -61,7 +61,7 @@ async function bootstrap() {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'PROD',
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: 'none', // ⬅️ add this — needed for cross-origin cookie sending
+        sameSite: process.env.NODE_ENV === 'PROD' ? 'none' : 'lax', // ⬅️ add this — needed for cross-origin cookie sending
       },
     }),
   );
