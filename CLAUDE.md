@@ -73,6 +73,10 @@ The app uses **both** JWT tokens and Redis-backed express-session cookies simult
 1. `POST /api/v1/payment/create` — reads cart from session user, creates a Cashfree order (currently hardcoded to `CFEnvironment.SANDBOX`), saves a `PENDING` transaction.
 2. `POST /api/v1/webhook/cashfree` — verifies HMAC-SHA256 signature (`x-webhook-signature` + `x-webhook-timestamp` headers against raw body), then updates the transaction status.
 
+## Naming conventions
+
+All variables, function parameters, object properties, and class fields across the codebase must use **snake_case** (underscore-separated), e.g. `user_id`, `order_id`, `billing_address_id`. This applies to local variables, DTO fields, schema props, and service method parameters. camelCase is only acceptable for class names, decorators, and NestJS lifecycle methods.
+
 ### Stub modules
 
 `inventory`, `order`, `coupon`, and `category` modules exist with empty services — they are scaffolded but not yet implemented.

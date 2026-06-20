@@ -2,6 +2,11 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from './user.schema';
 
+export enum AddressType {
+  BILLING = 'BILLING',
+  SHIPPING = 'SHIPPING',
+}
+
 export type AddressDocument = HydratedDocument<Address>;
 
 @Schema({
@@ -75,6 +80,13 @@ export class Address {
     default: false,
   })
   is_default: boolean;
+
+  @Prop({
+    type: String,
+    enum: Object.values(AddressType),
+    required: true,
+  })
+  type: AddressType;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

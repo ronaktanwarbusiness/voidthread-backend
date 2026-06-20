@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AddressModule } from './modules/address/address.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { CheckoutModule } from './modules/checkout/checkout.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -30,6 +31,7 @@ import { CoreModule } from './modules/core/core.module';
     }),
     AddressModule,
     AdminModule,
+    CheckoutModule,
     AuthModule,
     CartModule,
     CategoryModule,

@@ -4,6 +4,7 @@ import { PaymentController } from './payment.controller';
 import { CartModule } from '../cart/cart.module';
 import { UserModule } from '../user/user.module';
 import { OrderModule } from '../order/order.module';
+import { AddressModule } from '../address/address.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Transaction,
@@ -16,6 +17,7 @@ import { WebhookController } from './webhook.controller';
     CartModule,
     UserModule,
     OrderModule,
+    AddressModule,
     MongooseModule.forFeature([
       {
         name: Transaction.name,

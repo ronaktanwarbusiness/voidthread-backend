@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
-export class CreatePaymentDto {
+export class PlaceOrderDto {
   @IsString()
   @IsNotEmpty()
   billing_address_id: string;

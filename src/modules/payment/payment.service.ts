@@ -4,7 +4,13 @@ import { CartService } from '../cart/cart.service';
 import { Cashfree, CFEnvironment } from 'cashfree-pg';
 import { UserService } from '../user/user.service';
 import { OrderService } from '../order/order.service';
-import { CASHFREE_CLIENT_ID, CASHFREE_CLIENT_SECRET } from 'src/config/env';
+import { AddressService } from '../address/address.service';
+import {
+  BASE_URL,
+  CASHFREE_CLIENT_ID,
+  CASHFREE_CLIENT_SECRET,
+  FRONTEND_URL,
+} from 'src/config/env';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
@@ -23,6 +29,7 @@ export class PaymentService {
     private readonly cartService: CartService,
     private readonly userService: UserService,
     private readonly orderService: OrderService,
+    private readonly addressService: AddressService,
     @InjectModel(Transaction.name)
     private readonly transaction_model: Model<TransactionDocument>,
   ) {
@@ -61,6 +68,11 @@ export class PaymentService {
         };
       }
 
+      const [billingAddress, shippingAddress] = await Promise.all([
+        this.addressService.findAddressById(body.billing_address_id, user_id),
+        this.addressService.findAddressById(body.shipping_address_id, user_id),
+      ]);
+
       const order_id = `order_${randomUUID()}`;
 
       const request = {
@@ -76,9 +88,8 @@ export class PaymentService {
         },
 
         order_meta: {
-          return_url: 'https://gawk-cause-snooze.ngrok-free.dev',
-          notify_url:
-            'https://gawk-cause-snooze.ngrok-free.dev/api/v1/webhook/cashfree',
+          return_url: FRONTEND_URL,
+          notify_url: `${BASE_URL}/api/v1/webhook/cashfree`,
         },
       };
 
@@ -97,6 +108,8 @@ export class PaymentService {
           price_breakup,
           amount: grand_total,
           tax_amount: tax_total,
+          billing_address: billingAddress?.toObject(),
+          shipping_address: shippingAddress?.toObject(),
         },
       });
 
