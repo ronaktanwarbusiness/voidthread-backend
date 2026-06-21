@@ -50,6 +50,24 @@ export class CoreService {
     };
   }
 
+  async getCollections() {
+    const collections = await this.collectionModel
+      .find({ status: 'ACTIVE' })
+      .lean();
+
+    const data = collections.map((collection) => ({
+      ...collection,
+      id: collection._id.toString(),
+      _id: undefined,
+      product_ids: collection.product_ids.map((id) => id.toString()),
+    }));
+
+    return {
+      message: 'Collections retrieved successfully',
+      data,
+    };
+  }
+
   async getCollectionProducts(slug: string) {
     const collection = await this.collectionModel
       .findOne({ slug, status: 'ACTIVE' })

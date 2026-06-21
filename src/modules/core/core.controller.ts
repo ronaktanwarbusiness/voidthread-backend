@@ -5,6 +5,11 @@ import { CoreService } from './core.service';
 export class CoreController {
   constructor(private readonly coreService: CoreService) {}
 
+  @Get('collections')
+  async getCollections() {
+    return this.coreService.getCollections();
+  }
+
   @Get('products')
   async getProducts() {
     return this.coreService.getProducts();
