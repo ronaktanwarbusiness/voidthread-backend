@@ -88,8 +88,8 @@ export class PaymentService {
         },
 
         order_meta: {
-          return_url: FRONTEND_URL,
-          notify_url: `${BASE_URL}/api/v1/webhook/cashfree`,
+          return_url: process.env.FRONTEND_URL,
+          notify_url: `${process.env.BASE_URL}/api/v1/webhook/cashfree`,
         },
       };
 
@@ -115,7 +115,7 @@ export class PaymentService {
 
       return cashfreeResponse;
     } catch (err) {
-      console.log('Error:', err?.message);
+      console.log('Error:', err);
 
       return {
         is_success: false,

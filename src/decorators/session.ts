@@ -18,7 +18,6 @@ export const GetSession = createParamDecorator(
   (key: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
     const session = request.session;
-    console.log({ session });
     if (!session) return null;
     return key ? session[key as keyof typeof session] : session;
   },
