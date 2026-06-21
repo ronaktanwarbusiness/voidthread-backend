@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dtos/create-payment.dto';
 import { GetSession } from 'src/decorators/session';
@@ -11,5 +11,10 @@ export class PaymentController {
   async createPayment(@Body() body: CreatePaymentDto, @GetSession('user_id') user_id: string) {
     const response = await this.paymentService.createPayment(body, user_id);
     return response;
+  }
+
+  @Get('status/:order_id')
+  async getPaymentStatus(@Param('order_id') order_id: string, @GetSession('user_id') user_id: string) {
+    return this.paymentService.getPaymentStatus(order_id, user_id);
   }
 }

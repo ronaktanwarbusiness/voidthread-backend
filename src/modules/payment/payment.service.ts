@@ -88,7 +88,7 @@ export class PaymentService {
         },
 
         order_meta: {
-          return_url: process.env.FRONTEND_URL,
+          return_url: process.env.FRONTEND_URL + '/payment/status/' + order_id,
           notify_url: `${process.env.BASE_URL}/api/v1/webhook/cashfree`,
         },
       };
@@ -122,6 +122,28 @@ export class PaymentService {
         error_code: 'INTERNAL_ERROR',
       };
     }
+  }
+
+  async getPaymentStatus(order_id: string, user_id: string) {
+    if (!user_id) {
+      return { is_success: false, error_code: 'UNAUTHENTICATED_USER' };
+    }
+
+    const transaction = await this.transaction_model
+      .findOne({ order_id, user_id })
+      .lean();
+
+    if (!transaction) {
+      return { is_success: false, error_code: 'TRANSACTION_NOT_FOUND' };
+    }
+
+    return {
+      is_success: true,
+      data: {
+        order_id: transaction.order_id,
+        status: transaction.status,
+      },
+    };
   }
 
   async handleCashfreeWebhook(body: any) {
